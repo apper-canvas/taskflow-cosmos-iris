@@ -34,6 +34,44 @@
     background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.1) 100%);
     border-left: 4px solid #22c55e;
   }
+  
+  .drag-preview {
+    transform: rotate(5deg);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    opacity: 0.9;
+  }
+  
+  .dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+    cursor: grabbing !important;
+  }
+  
+  .drag-over {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    border: 2px dashed #6366f1;
+    transform: scale(1.02);
+  }
+  
+  .drop-zone {
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+  }
+  
+  .drop-zone.can-drop {
+    border-color: #6366f1;
+    background: rgba(99, 102, 241, 0.05);
+  }
+  
+  .drop-zone.is-over {
+    border-color: #4f46e5;
+    background: rgba(99, 102, 241, 0.1);
+    transform: scale(1.01);
+  }
+  
+  .task-item-draggable {
+    cursor: grab;
+  }
 }
 
 @layer base {

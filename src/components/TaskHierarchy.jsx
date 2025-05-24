@@ -172,6 +172,10 @@ const TaskHierarchy = ({ projectId, tasks }) => {
       dispatch(deleteTask(taskId))
     }
   }
+  const handleReorderTasks = (draggedTaskId, targetTaskId, position) => {
+    dispatch(reorderTasks({ draggedTaskId, targetTaskId, position }))
+  }
+
   
   const handleToggleStatus = (task) => {
     const newStatus = task.status === 'completed' ? 'todo' : 'completed'
@@ -194,6 +198,7 @@ const TaskHierarchy = ({ projectId, tasks }) => {
         <div className="text-center py-8 text-surface-600 dark:text-surface-400">
           No tasks found. Add your first task to get started.
         </div>
+              onReorder={handleReorderTasks}
       ) : (
         <div className="space-y-3">
           {rootTasks.map((task) => (

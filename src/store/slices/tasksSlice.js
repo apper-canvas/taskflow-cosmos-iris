@@ -115,8 +115,34 @@ const tasksSlice = createSlice({
     setFilters: (state, action) => {
       state.filters = { ...state.filters, ...action.payload }
     },
+    reorderTasks: (state, action) => {
+      const { draggedTaskId, targetTaskId, position } = action.payload
+      
+      const draggedTaskIndex = state.tasks.findIndex(t => t.id === draggedTaskId)
+      const targetTaskIndex = state.tasks.findIndex(t => t.id === targetTaskId)
+      
+      if (draggedTaskIndex !== -1 && targetTaskIndex !== -1) {
+        const [draggedTask] = state.tasks.splice(draggedTaskIndex, 1)
+        
+        const newTargetIndex = position === 'before' ? targetTaskIndex : targetTaskIndex + 1
+        const adjustedIndex = draggedTaskIndex < targetTaskIndex ? newTargetIndex - 1 : newTargetIndex
+        
+        state.tasks.splice(adjustedIndex, 0, draggedTask)
+        
+        toast.success('Task reordered successfully!')
+      }
+    },
+    moveTaskToProject: (state, action) => {
+      const { taskId, projectId } = action.payload
+      const task = state.tasks.find(t => t.id === taskId)
+      
+      if (task && task.projectId !== projectId) {
+        task.projectId = projectId
+        toast.success('Task moved to project successfully!')
+      }
+    },
   },
 })
 
-export const { setLoading, setError, addTask, updateTask, deleteTask, setFilters } = tasksSlice.actions
+export const { setLoading, setError, addTask, updateTask, deleteTask, setFilters, reorderTasks, moveTaskToProject } = tasksSlice.actions
 export default tasksSlice.reducer

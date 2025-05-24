@@ -1,11 +1,16 @@
 import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link, useLocation } from 'react-router-dom'
+import { useDrop } from 'react-dnd'
 import { Home, FolderOpen, Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { moveTaskToProject } from '../store/slices/tasksSlice'
 
 const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const dispatch = useDispatch()
   const location = useLocation()
+  const projects = useSelector(state => state.projects.projects)
 
   const navigation = [
     { name: 'Dashboard', href: '/', icon: Home },
@@ -19,9 +24,67 @@ const Layout = ({ children }) => {
     return location.pathname.startsWith(href)
   }
 
+  const ProjectDropZone = ({ project, children }) => {
+    const [{ isOver, canDrop }, drop] = useDrop({
+      accept: 'TASK',
+      drop: (item) => {
+        dispatch(moveTaskToProject({ taskId: item.id, projectId: project.id }))
+      },
+      collect: (monitor) => ({
+        isOver: monitor.isOver(),
+        canDrop: monitor.canDrop(),
+      }),
+    })
+
+    return (
+      <div
+        ref={drop}
+        className={`drop-zone ${canDrop ? 'can-drop' : ''} ${isOver ? 'is-over' : ''}`}
+      >
+        {children}
+      </div>
+    )
+  }
+
   return (
     <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       {/* Mobile sidebar backdrop */}
+            
+            if (item.name === 'Projects') {
+              return (
+                <div key={item.name} className="space-y-1">
+                  <Link
+                    to={item.href}
+                    className={`flex items-center px-4 py-3 rounded-xl transition-all duration-200 ${
+                      isActive(item.href)
+                        ? 'bg-primary text-white shadow-lg'
+                        : 'text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700'
+                    }`}
+                    onClick={() => setSidebarOpen(false)}
+                  >
+                    <Icon className="w-5 h-5 mr-3" />
+                    {item.name}
+                  </Link>
+                  
+                  {/* Project drop zones */}
+                  <div className="ml-4 space-y-1">
+                    {projects.map((project) => (
+                      <ProjectDropZone key={project.id} project={project}>
+                        <Link
+                          to={`/projects/${project.id}`}
+                          className="flex items-center px-3 py-2 text-sm rounded-lg transition-all duration-200 text-surface-600 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-700 hover:text-surface-900 dark:hover:text-surface-200"
+                          onClick={() => setSidebarOpen(false)}
+                        >
+                          <div className="w-2 h-2 bg-primary rounded-full mr-3" />
+                          {project.name}
+                        </Link>
+                      </ProjectDropZone>
+                    ))}
+                  </div>
+                </div>
+              )
+            }
+            
       <AnimatePresence>
         {sidebarOpen && (
           <motion.div
