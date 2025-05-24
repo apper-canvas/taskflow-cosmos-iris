@@ -187,6 +187,7 @@ const TaskItem = ({ task, subtasks, onAddSubtask, onEdit, onDelete, onToggleStat
                 onDelete={onDelete}
                 onToggleStatus={onToggleStatus}
                 onReorder={onReorder}
+                onReorder={onReorder}
                 level={level + 1}
               />
             ))}
@@ -271,111 +272,6 @@ const TaskHierarchy = ({ projectId, tasks }) => {
   }
   
   return (
-    <div className={indentClass}>
-      <motion.div
-        layout
-        className={`bg-white dark:bg-surface-800 rounded-lg p-4 border-l-4 ${getPriorityColor(task.priority)} shadow-sm hover:shadow-md transition-shadow`}
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3 flex-1">
-            {hasSubtasks && (
-              <button
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="p-1 hover:bg-surface-100 dark:hover:bg-surface-700 rounded transition-colors"
-              >
-                {isExpanded ? (
-                  <ChevronDown className="w-4 h-4" />
-                ) : (
-                  <ChevronRight className="w-4 h-4" />
-                )}
-              </button>
-            )}
-            
-            <div className="flex items-center gap-2">
-              {getStatusIcon(task.status)}
-            </div>
-            
-            <div className="flex-1">
-              <h4 className={`font-medium ${
-                task.status === 'completed' 
-                  ? 'line-through text-surface-500' 
-                  : 'text-surface-900 dark:text-surface-100'
-              }`}>
-                {task.title}
-              </h4>
-              {task.description && (
-                <p className="text-sm text-surface-600 dark:text-surface-400 mt-1">
-                  {task.description}
-                </p>
-              )}
-              <div className="flex items-center gap-4 mt-2 text-xs text-surface-500 dark:text-surface-400">
-                <span>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
-                <span>Assignee: {task.assignee}</span>
-                <span className="capitalize">{task.priority} priority</span>
-              </div>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => onToggleStatus(task)}
-              className="p-2 hover:bg-surface-100 dark:hover:bg-surface-700 rounded transition-colors"
-              title="Toggle status"
-            >
-              <CheckCircle className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => onAddSubtask(task.id)}
-              className="p-2 hover:bg-surface-100 dark:hover:bg-surface-700 rounded transition-colors"
-              title="Add subtask"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => onEdit(task)}
-              className="p-2 hover:bg-surface-100 dark:hover:bg-surface-700 rounded transition-colors"
-              title="Edit task"
-            >
-              <Edit className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => onDelete(task.id)}
-              className="p-2 hover:bg-red-100 dark:hover:bg-red-900/20 text-red-600 rounded transition-colors"
-              title="Delete task"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </motion.div>
-      
-      <AnimatePresence>
-        {hasSubtasks && isExpanded && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="mt-2 space-y-2"
-          >
-            {subtasks.map((subtask) => (
-              <TaskItem
-                key={subtask.id}
-                task={subtask}
-                subtasks={[]}
-                onAddSubtask={onAddSubtask}
-                onEdit={onEdit}
-                onDelete={onDelete}
-                onToggleStatus={onToggleStatus}
-                level={level + 1}
-              />
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  )
-}
-
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-surface-900 dark:text-surface-100">
